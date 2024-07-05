@@ -15,37 +15,25 @@ Route::post('users', [UserController::class, 'store']);
 
 
 Route::middleware('auth.json:sanctum')->group(function () {
-// logout
-Route::post('/logout', [AuthController::class, 'logout']);
-});
-
-
-    // Book
-    Route::get('/books', [BookController::class, 'index']);
-    Route::post('/books', [BookController::class, 'store']);
-    Route::get('/books/{id}', [BookController::class, 'show']);
-    Route::put('/books/{id}', [BookController::class, 'update']);
-    Route::delete('/books/{id}', [BookController::class, 'destroy']);
-
-// user
-Route::get('users', [UserController::class, 'index']);
-Route::get('users/{id}', [UserController::class, 'show']);
-
-Route::put('users/{id}', [UserController::class, 'update']);
-Route::delete('users/{id}', [UserController::class, 'destroy']);
-
-
-
-// Borrowing
-Route::get('borrowings', [BorrowingController::class, 'index']);
-Route::get('borrowings/{id}', [BorrowingController::class, 'show']);
+// profile
+Route::put('users/{id}', [UserController::class, 'update']); //done
+Route::put('users/{id}', [UserController::class, 'update']); //ngambil nama user
+Route::post('/logout', [AuthController::class, 'logout']); //done
+// book
+Route::get('/books/hero', [BookController::class, 'index2']); //1buku random
+Route::get('/books/popular', [BookController::class, 'index3']); //5 buku random
+Route::get('/books/rangking', [BookController::class, 'index4']); //4 buku rangking tertinggi
+Route::get('/books/new', [BookController::class, 'index5']); //4 buku new tertinggi
+Route::get('/books/recomend', [BookController::class, 'index6']); //4 buku random
+Route::get('/books', [BookController::class, 'index']);
+Route::get('/books/{id}', [BookController::class, 'show']);
+// borrowing
+Route::get('borrowings', [BorrowingController::class, 'index']); //where user_id == id(users)
+Route::get('borrowings/borrow', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=borrowed
+Route::get('borrowings/return', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=returned
+Route::get('borrowings/{id}', [BorrowingController::class, 'show']); 
 Route::post('borrowings', [BorrowingController::class, 'store']);
-Route::put('borrowings/{id}', [BorrowingController::class, 'update']);
-Route::delete('borrowings/{id}', [BorrowingController::class, 'destroy']);
-
-// Review
+// review
 Route::get('reviews', [ReviewController::class, 'index']);
-Route::get('reviews/{id}', [ReviewController::class, 'show']);
 Route::post('reviews', [ReviewController::class, 'store']);
-Route::put('reviews/{id}', [ReviewController::class, 'update']);
-Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
+});
