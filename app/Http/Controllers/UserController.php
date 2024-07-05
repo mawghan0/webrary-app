@@ -5,21 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
-        return response()->json($users);
-    }
-
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
-        return response()->json($user);
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -46,26 +35,33 @@ class UserController extends Controller
         return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
 
-    public function update(Request $request, $id)
+
+    public function update(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $id,
-        ]);
+        // Dapatkan pengguna yang terautentikasi
+        $user = Auth::user();
 
-        $user = User::findOrFail($id);
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        // Pastikan pengguna ditemukan
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
 
-        return response()->json($user, 200);
+        // Update nama pengguna
+        $user = User::where('id', $user->id)->update(['name' => $request->name]);
+        // $user->name = $request->name;
+        // $user->save();
+
+        return response()->json(['message' => 'Name updated successfully', 'user' => $request->name], 200);
     }
-
-    public function destroy($id)
+    public function profile()
     {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return response()->json(null, 204);
+        // Dapatkan pengguna yang terautentikasi
+        $user = Auth::user();
+
+        // Pastikan pengguna ditemukan
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        return response()->json(['message' => 'Name', 'user' => $user->name], 200);
     }
 }

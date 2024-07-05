@@ -9,18 +9,18 @@ use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\AuthController;
 
 // login
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']); //done
 // register
-Route::post('users', [UserController::class, 'store']);
+Route::post('users', [UserController::class, 'store']); //done
 
 
 Route::middleware('auth.json:sanctum')->group(function () {
 // profile
-Route::put('users/{id}', [UserController::class, 'update']); //done
-Route::put('users/{id}', [UserController::class, 'update']); //ngambil nama user
+Route::put('users', [UserController::class, 'update']); //update nama DONE
+Route::get('users', [UserController::class, 'profile']); //ngambil nama user DONE
 Route::post('/logout', [AuthController::class, 'logout']); //done
 // book
-Route::get('/books/hero', [BookController::class, 'index2']); //1buku random
+Route::get('/books/hero', [BookController::class, 'index2']); //1buku random hero
 Route::get('/books/popular', [BookController::class, 'index3']); //5 buku random
 Route::get('/books/rangking', [BookController::class, 'index4']); //4 buku rangking tertinggi
 Route::get('/books/new', [BookController::class, 'index5']); //4 buku new tertinggi
