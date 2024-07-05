@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -21,19 +22,28 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
         ]);
 
+        // Validasi email
+        if ($validator->fails() && $validator->errors()->has('email')) {
+            return response()->json(['error' => $validator->errors()->first('email')], 400);
+        }
+
+        // Validasi password
+        if ($validator->fails() && $validator->errors()->has('password')) {
+            return response()->json(['error' => $validator->errors()->first('password')], 400);
+        }
+
+        // Create user jika validasi berhasil
         $user = User::create([
-            'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt($request->password), // Pastikan untuk menggunakan enkripsi password
         ]);
 
-        return response()->json($user, 201);
+        return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
 
     public function update(Request $request, $id)
