@@ -23,9 +23,7 @@ class AuthController extends Controller
             return response()->json(['token' => $token], 200);
         }
 
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
+        return response()->json(['message' => 'Email atau Password yang anda masukkan salah'], 401);
     }
     public function logout(Request $request)
     {
