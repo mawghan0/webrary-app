@@ -7,10 +7,111 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    public function hero()
+    {
+        // Ambil satu buku secara acak
+        $book = Book::inRandomOrder()->first();
+
+        // Kembalikan response JSON dengan kolom yang diminta
+        return response()->json([
+            'id' => $book->id,
+            'title' => $book->title,
+            'genre' => $book->genre,
+            'description' => $book->description,
+            'cover_image' => $book->cover_image,
+        ]);
+    }
+
+    public function popular()
+    {
+        // Ambil enam buku secara acak
+        $books = Book::inRandomOrder()->limit(6)->get();
+
+        // Format data yang akan dikembalikan dalam response JSON
+        $formattedBooks = $books->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'genre' => $book->genre,
+                'cover_image' => $book->cover_image,
+            ];
+        });
+
+        // Kembalikan response JSON dengan data buku yang diminta
+        return response()->json($formattedBooks);
+    }
+
+    public function rangking()
+    {
+        // Ambil empat buku dengan rating tertinggi
+        $books = Book::orderBy('rating', 'desc')->limit(4)->get();
+
+        // Format data yang akan dikembalikan dalam response JSON
+        $formattedBooks = $books->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'genre' => $book->genre,
+                'rating' => $book->rating,
+                'cover_image' => $book->cover_image,
+            ];
+        });
+
+        // Kembalikan response JSON dengan data buku yang diminta
+        return response()->json($formattedBooks);
+    }
+
+    public function new()
+    {
+        // Ambil empat buku dengan year_published terbaru
+        $books = Book::orderBy('year_published', 'desc')->limit(4)->get();
+
+        // Format data yang akan dikembalikan dalam response JSON
+        $formattedBooks = $books->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'genre' => $book->genre,
+                'rating' => $book->rating,
+                'cover_image' => $book->cover_image,
+            ];
+        });
+
+        // Kembalikan response JSON dengan data buku yang diminta
+        return response()->json($formattedBooks);
+    }
+
+    public function recommend()
+    {
+        // Ambil empat buku secara acak
+        $books = Book::inRandomOrder()->limit(4)->get();
     
+        // Format data yang akan dikembalikan dalam response JSON
+        $formattedBooks = $books->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'genre' => $book->genre,
+                'rating' => $book->rating,
+                'cover_image' => $book->cover_image,
+            ];
+        });
+    
+        // Kembalikan response JSON dengan data buku yang diminta
+        return response()->json($formattedBooks);
+    }
+
     public function index()
     {
-        $books = Book::all();
+        $books = Book::all()->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'genre' => $book->genre,
+                'cover_image' => $book->cover_image,
+            ];
+        });
+
         return response()->json($books);
     }
 
@@ -18,54 +119,5 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
         return response()->json($book);
-    }
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'title' => 'required|string',
-    //         'author' => 'required|string',
-    //         'publisher' => 'required|string',
-    //         'year_published' => 'required|integer',
-    //         'genre' => 'required|string',
-    //         'rating' => 'required|integer|min:1|max:5',
-    //     ]);
-
-    //     $book = Book::create($request->all());
-
-    //     return response()->json($book, 201);
-    // }
-    public function store(Request $request)
-    {  
-        try {
-            $book = Book::create($request->all());
-            return response()->json($book, 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e], 500);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'author' => 'required|string',
-            'publisher' => 'required|string',
-            'year_published' => 'required|integer',
-            'genre' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $book = Book::findOrFail($id);
-        $book->update($request->all());
-
-        return response()->json($book, 200);
-    }
-
-    public function destroy($id)
-    {
-        $book = Book::findOrFail($id);
-        $book->delete();
-        return response()->json(null, 204);
     }
 }

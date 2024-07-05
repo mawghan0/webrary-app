@@ -20,13 +20,13 @@ Route::put('users', [UserController::class, 'update']); //update nama DONE
 Route::get('users', [UserController::class, 'profile']); //ngambil nama user DONE
 Route::post('/logout', [AuthController::class, 'logout']); //done
 // book
-Route::get('/books/hero', [BookController::class, 'index2']); //1buku random hero
-Route::get('/books/popular', [BookController::class, 'index3']); //5 buku random
-Route::get('/books/rangking', [BookController::class, 'index4']); //4 buku rangking tertinggi
-Route::get('/books/new', [BookController::class, 'index5']); //4 buku new tertinggi
-Route::get('/books/recomend', [BookController::class, 'index6']); //4 buku random
-Route::get('/books', [BookController::class, 'index']);
-Route::get('/books/{id}', [BookController::class, 'show']);
+Route::get('/books/hero', [BookController::class, 'hero']); //1buku random hero DONE
+Route::get('/books/popular', [BookController::class, 'popular']); //5 buku random DONE
+Route::get('/books/rangking', [BookController::class, 'rangking']); //4 buku rangking tertinggi DONE
+Route::get('/books/new', [BookController::class, 'new']); //4 buku new tertinggi DONE
+Route::get('/books/recommend', [BookController::class, 'recommend']); //4 buku random
+Route::get('/books', [BookController::class, 'index']); //done
+Route::get('/books/{id}', [BookController::class, 'show']); //done
 // borrowing
 Route::get('borrowings', [BorrowingController::class, 'index']); //where user_id == id(users)
 Route::get('borrowings/borrow', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=borrowed
