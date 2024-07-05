@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    
     public function index()
     {
         $books = Book::all();
@@ -19,20 +20,29 @@ class BookController extends Controller
         return response()->json($book);
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'title' => 'required|string',
+    //         'author' => 'required|string',
+    //         'publisher' => 'required|string',
+    //         'year_published' => 'required|integer',
+    //         'genre' => 'required|string',
+    //         'rating' => 'required|integer|min:1|max:5',
+    //     ]);
+
+    //     $book = Book::create($request->all());
+
+    //     return response()->json($book, 201);
+    // }
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'author' => 'required|string',
-            'publisher' => 'required|string',
-            'year_published' => 'required|integer',
-            'genre' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $book = Book::create($request->all());
-
-        return response()->json($book, 201);
+    {  
+        try {
+            $book = Book::create($request->all());
+            return response()->json($book, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
     }
 
     public function update(Request $request, $id)
