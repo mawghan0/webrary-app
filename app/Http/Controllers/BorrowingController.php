@@ -4,12 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BorrowingController extends Controller
 {
-    public function index()
+    public function getBorrowingsByUser()
     {
-        $borrowings = Borrowing::all();
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+
+        // Mengambil semua peminjaman berdasarkan ID pengguna
+        $borrowings = Borrowing::where('user_id', $user->id)
+            ->join('books', 'borrowings.book_id', '=', 'books.id')
+            ->select('borrowings.id', 'borrowings.book_id', 'books.title', 'books.genre', 'books.cover_image', 'borrowings.status', 'borrowings.return_date')
+            ->get();
+
+        // Mengembalikan data peminjaman dalam bentuk JSON
         return response()->json($borrowings);
     }
 

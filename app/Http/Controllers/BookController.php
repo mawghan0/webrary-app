@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -119,5 +120,18 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
         return response()->json($book);
+    }
+    public function borrow($id)
+    {
+        $user = Auth::user();
+        $book = Book::findOrFail($id);
+        return response()->json([
+            'id' => $book->id,
+            'publisher' => $book->publisher,
+            'name' => $user->name,
+            'title' => $book->title,
+            'author' => $book->author,
+            'cover_image' => $book->cover_image,
+        ]);
     }
 }
