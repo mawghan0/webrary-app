@@ -39,6 +39,6 @@ Route::put('borrowings/{id}', [BorrowingController::class, 'extendReturnDate']);
 
 
 // review
-Route::get('reviews', [ReviewController::class, 'index']);
-Route::post('reviews', [ReviewController::class, 'store']);
+Route::get('reviews', [ReviewController::class, 'index']); //done
+Route::post('reviews/{id}', [ReviewController::class, 'store']); //done
 });
