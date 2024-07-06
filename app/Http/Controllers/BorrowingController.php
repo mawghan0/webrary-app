@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon; 
+use Carbon\Carbon;
 
 class BorrowingController extends Controller
 {
@@ -24,10 +24,27 @@ class BorrowingController extends Controller
         return response()->json($borrowings);
     }
 
-    public function show($id)
+    public function getBorrowingDetails($id)
     {
-        $borrowing = Borrowing::findOrFail($id);
-        return response()->json($borrowing);
+        $borrowing = Borrowing::where('borrowings.id', $id)
+            ->join('books', 'borrowings.book_id', '=', 'books.id')
+            ->join('users', 'borrowings.user_id', '=', 'users.id')
+            ->select(
+                'borrowings.book_id',
+                'books.publisher',
+                'users.name as user_name',
+                'books.title',
+                'books.author',
+                'books.cover_image',
+                'borrowings.return_date'
+            )
+            ->first();
+
+        if ($borrowing) {
+            return response()->json($borrowing);
+        } else {
+            return response()->json(['message' => 'Borrowing not found'], 404);
+        }
     }
 
     public function store($id)
@@ -52,26 +69,45 @@ class BorrowingController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function getBorrowedByUser()
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'book_id' => 'required|exists:books,id',
-            'borrow_date' => 'required|date',
-            'return_date' => 'nullable|date',
-            'status' => 'required|in:borrowed,returned',
-        ]);
+        $user = Auth::user();
 
-        $borrowing = Borrowing::findOrFail($id);
-        $borrowing->update($request->all());
+        $borrowings = Borrowing::where('user_id', $user->id)
+            ->where('status', 'borrowed')
+            ->join('books', 'borrowings.book_id', '=', 'books.id')
+            ->select('borrowings.id', 'borrowings.book_id', 'books.title', 'books.genre', 'books.cover_image', 'borrowings.status', 'borrowings.return_date')
+            ->get();
 
-        return response()->json($borrowing, 200);
+        return response()->json($borrowings);
     }
 
-    public function destroy($id)
+    public function getReturnedByUser()
     {
-        $borrowing = Borrowing::findOrFail($id);
-        $borrowing->delete();
-        return response()->json(null, 204);
+        $user = Auth::user();
+
+        $borrowings = Borrowing::where('user_id', $user->id)
+            ->where('status', 'returned')
+            ->join('books', 'borrowings.book_id', '=', 'books.id')
+            ->select('borrowings.id', 'borrowings.book_id', 'books.title', 'books.genre', 'books.cover_image', 'borrowings.status', 'borrowings.return_date')
+            ->get();
+
+        return response()->json($borrowings);
+    }
+    public function extendReturnDate($id)
+    {
+        $borrowing = Borrowing::find($id);
+
+        if (!$borrowing) {
+            return response()->json(['message' => 'Borrowing not found'], 404);
+        }
+
+        $borrowing->return_date = Carbon::parse($borrowing->return_date)->addWeek();
+        $borrowing->save();
+
+        return response()->json([
+            'message' => 'Return date extended successfully',
+            'data' => $borrowing
+        ]);
     }
 }

@@ -32,9 +32,11 @@ Route::get('/books/{id}/borrow', [BookController::class, 'borrow']); //done
 // borrowing
 Route::post('borrowings/{id}', [BorrowingController::class, 'store']); //DONE
 Route::get('borrowings', [BorrowingController::class, 'getBorrowingsByUser']); //where user_id == id(users) DONE
-Route::get('borrowings/borrow', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=borrowed
-Route::get('borrowings/return', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=returned
-Route::get('borrowings/{id}', [BorrowingController::class, 'show']); 
+Route::get('borrowings/borrow', [BorrowingController::class, 'getBorrowedByUser']); //where user_id == id(users) where status=borrowed DONE
+Route::get('borrowings/return', [BorrowingController::class, 'getReturnedByUser']); //where user_id == id(users) where status=returned DONE
+Route::get('borrowings/{id}', [BorrowingController::class, 'getBorrowingDetails']); //DONE
+Route::put('borrowings/{id}', [BorrowingController::class, 'extendReturnDate']); //DONE
+
 
 // review
 Route::get('reviews', [ReviewController::class, 'index']);
