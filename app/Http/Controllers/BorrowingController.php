@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon; 
 
 class BorrowingController extends Controller
 {
@@ -29,19 +30,26 @@ class BorrowingController extends Controller
         return response()->json($borrowing);
     }
 
-    public function store(Request $request)
+    public function store($id)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'book_id' => 'required|exists:books,id',
-            'borrow_date' => 'required|date',
-            'return_date' => 'nullable|date',
-            'status' => 'required|in:borrowed,returned',
-        ]);
+        $user = Auth::user();
 
-        $borrowing = Borrowing::create($request->all());
+        // Mengatur return_date ke satu bulan setelah tanggal saat ini
+        $return_date = Carbon::now()->addMonth();
 
-        return response()->json($borrowing, 201);
+        // Membuat data peminjaman baru
+        $borrowing = new Borrowing;
+        $borrowing->user_id = $user->id;
+        $borrowing->book_id = $id;
+        $borrowing->borrow_date = Carbon::now();
+        $borrowing->return_date = $return_date;
+        $borrowing->status = 'borrowed';
+        $borrowing->save();
+
+        return response()->json([
+            'message' => 'Book borrowed successfully',
+            'data' => $borrowing
+        ], 201);
     }
 
     public function update(Request $request, $id)

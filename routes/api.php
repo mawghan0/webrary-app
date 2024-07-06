@@ -30,11 +30,12 @@ Route::get('/books/{id}', [BookController::class, 'show']); //done
 Route::get('/books/{id}/borrow', [BookController::class, 'borrow']); //done
 
 // borrowing
+Route::post('borrowings/{id}', [BorrowingController::class, 'store']); //DONE
 Route::get('borrowings', [BorrowingController::class, 'getBorrowingsByUser']); //where user_id == id(users) DONE
 Route::get('borrowings/borrow', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=borrowed
 Route::get('borrowings/return', [BorrowingController::class, 'index2']); //where user_id == id(users) where status=returned
 Route::get('borrowings/{id}', [BorrowingController::class, 'show']); 
-Route::post('borrowings', [BorrowingController::class, 'store']);
+
 // review
 Route::get('reviews', [ReviewController::class, 'index']);
 Route::post('reviews', [ReviewController::class, 'store']);
