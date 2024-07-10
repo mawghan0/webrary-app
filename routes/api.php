@@ -11,13 +11,13 @@ use App\Http\Controllers\AuthController;
 // login
 Route::post('/login', [AuthController::class, 'login']); //done
 // register
-Route::post('users', [UserController::class, 'store']); //done
+Route::post('/users', [UserController::class, 'store']); //done
 
 
 Route::middleware('auth.json:sanctum')->group(function () {
 // profile
-Route::put('users', [UserController::class, 'update']); //update nama DONE
-Route::get('users', [UserController::class, 'profile']); //ngambil nama user DONE
+Route::put('/users', [UserController::class, 'update']); //update nama DONE
+Route::get('/users', [UserController::class, 'profile']); //ngambil nama user DONE
 Route::post('/logout', [AuthController::class, 'logout']); //done
 // book
 Route::get('/books/hero', [BookController::class, 'hero']); //1buku random hero DONE

@@ -12,6 +12,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
@@ -28,13 +29,13 @@ class UserController extends Controller
 
         // Create user jika validasi berhasil
         $user = User::create([
+            'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password), // Pastikan untuk menggunakan enkripsi password
         ]);
 
         return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
-
 
     public function update(Request $request)
     {
